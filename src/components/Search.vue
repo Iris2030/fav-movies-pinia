@@ -6,6 +6,7 @@
      type="text"
       placeholder="enter movie"
       v-model="searchedMovie">
+      <button class="search-btn" type="submit">Search</button>
 </form>
 <Loader v-if="searchStore.loader"/>
 <div v-else>
@@ -24,6 +25,10 @@ const searchedMovie = ref('')
 </script>
 
 <style scoped>
+
+form{
+    display: flex;
+}
 .search-input {
   border: 1px solid #e7e7e7;
   width: 100%;
@@ -31,5 +36,18 @@ const searchedMovie = ref('')
   padding: 0 10px;
   margin-bottom: 20px;
   border-radius: 10px;
+}
+
+.search-btn{
+    border: none;
+  width: 100px;
+  height: 40px;
+  font-size: 14px;
+  margin: 0 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  background: #efefef;
+  background: #1eb4c3;
+  margin-right: auto;
 }
 </style>

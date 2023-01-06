@@ -15,6 +15,7 @@ loader: false
             this.loader = true
           const res =  await fetch(`${url}${search}`)
           const data = await res.json()
+          console.log('fetching...');
          this.movies = data.results
          this.loader = false
 
