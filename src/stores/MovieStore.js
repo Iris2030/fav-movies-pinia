@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 
 // export const useMovieStore = defineStore("movieStore", {
 //   state: () => ({
@@ -31,27 +31,48 @@ import { computed, ref } from "vue";
 export const useMovieStore = defineStore("movieStore", () => {
   const movies = ref([]);
   const activeTab = ref(2);
+  const moviesInLocalStorage = localStorage.getItem("movies");
+  if (moviesInLocalStorage) {
+    movies.value = JSON.parse(moviesInLocalStorage)._value;
+  }
 
-  const watchedMovies = computed(() =>{
-          return movies.value.filter((movie) => movie.isWatched);
-  })
+  const watchedMovies = computed(() => {
+    return movies.value.filter((movie) => movie.isWatched);
+  });
 
-  const totalCountMovies = computed(() =>{
+  const totalCountMovies = computed(() => {
     return movies.value.length;
-})
+  });
 
   const setActiveTab = (id) => {
-    activeTab.value = id
+    activeTab.value = id;
   };
 
   const toggleWatch = (id) => {
-          const index = movies.value.findIndex((movie) => movie.id === id);
-          movies.value[index].isWatched = !movies.value[index].isWatched;
-        }
+    const index = movies.value.findIndex((movie) => movie.id === id);
+    movies.value[index].isWatched = !movies.value[index].isWatched;
+  };
 
-        const deleteMovie = (id) => {
-        return movies.value = movies.value.filter(movie => movie.id !== id);
-       }
+  const deleteMovie = (id) => {
+    return (movies.value = movies.value.filter((movie) => movie.id !== id));
+  };
 
-  return {activeTab, movies, toggleWatch, setActiveTab, deleteMovie,watchedMovies,totalCountMovies}
+  watch(
+    () => movies,
+    (state) => {
+      localStorage.setItem("movies", JSON.stringify(state));
+    },
+    { deep: true }
+  );
+
+  return {
+    activeTab,
+    movies,
+    toggleWatch,
+    setActiveTab,
+    deleteMovie,
+    watchedMovies,
+    totalCountMovies,
+    moviesInLocalStorage,
+  };
 });
