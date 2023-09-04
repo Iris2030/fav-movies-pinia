@@ -5,6 +5,9 @@ import { ref } from "vue";
 const url =
   "https:api.themoviedb.org/3/search/movie?api_key=967c6f14dacb0ca10f1175f7851a5869&query=";
 
+  const trendingFilmsUrl = `https://api.themoviedb.org/3/trending/movie/day?api_key=967c6f14dacb0ca10f1175f7851a5869`;
+
+
 // export const useSearchStore = defineStore("searchstore", {
 //   state: () => ({
 // movies:[],
@@ -32,13 +35,28 @@ const url =
 export const useSearchStore = defineStore("searchstore", () => {
   const loader = ref(false);
   const movies = ref([]);
+  const trandingMovies = ref([])
 
-  const getMovies = async (search) => {
+  const fetchTrendingMovies = async () => {
     loader.value = true;
-    const res = await fetch(`${url}${search}`);
+    const res = await fetch(`${trendingFilmsUrl}`);
+    const data = await res.json();
+    trandingMovies.value = data.results;
+    loader.value = false;
+    return trandingMovies.value
+  };
+
+  const getMovies = async (searchedMovie) => {
+    if(!searchedMovie){
+      alert('please enter something');
+      return
+    }
+    loader.value = true;
+    const res = await fetch(`${url}${searchedMovie}`);
     const data = await res.json();
     movies.value = data.results;
     loader.value = false;
+
   };
 
   const addToFavMovies = (object) => {
@@ -47,5 +65,5 @@ export const useSearchStore = defineStore("searchstore", () => {
     movieStore.activeTab = 1;
   };
 
-  return {loader, movies, getMovies, addToFavMovies}
+  return {loader, movies, getMovies, addToFavMovies, fetchTrendingMovies,trandingMovies}
 });

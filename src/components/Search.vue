@@ -1,6 +1,8 @@
 <template>
     <div>
-<form @submit.prevent="searchStore.getMovies(searchedMovie)" action="">
+<form @submit.prevent="searchStore.getMovies(searchedMovie)" action=""> 
+<!-- <form @submit.prevent="searchStore.fetchTrendingMovies()" action=""> -->
+
     <input 
     class="search-input"
      type="text"
@@ -9,19 +11,26 @@
       <button class="search-btn" type="submit">Search</button>
 </form>
 <Loader v-if="searchStore.loader"/>
-<div v-else>
+<div v-else-if="searchStore.movies < 1">
+    <Movie v-for="movie of searchStore.trandingMovies" :key="movie.id" :movie="movie" :isSearched="true"/>
+</div>
+<div v-else-if="searchStore.movies">
     <Movie v-for="movie of searchStore.movies" :key="movie.id" :movie="movie" :isSearched="true"/>
 </div>
     </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref} from 'vue';
 import {useSearchStore} from '../stores/SearchStore'
 import Loader from './Loader.vue'
 import Movie from './Movie.vue';
 const searchStore = useSearchStore()
 const searchedMovie = ref('')
+
+ searchStore.fetchTrendingMovies()
+
+
 </script>
 
 <style scoped>
